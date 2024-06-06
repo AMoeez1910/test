@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Scraper</title>
+</head>
+<body>
+    <h1>Amazon Scraper</h1>
+    <form id="scrapeForm">
+        <label for="queries">Enter search queries (comma separated):</label>
+        <input type="text" id="queries" name="queries" required>
+        <button type="submit">Scrape</button>
+    </form>
+    <div id="results"></div>
+    <script>
+        document.getElementById('scrapeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const queries = document.getElementById('queries').value.split(',').map(q => q.trim());
+            fetch('/scrape', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ queries: queries })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '<h2>Results:</h2>' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
